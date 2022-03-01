@@ -1,0 +1,54 @@
+version: '3.7'
+
+services:
+  eureka-server:
+    image: eureka
+    container_name: eureka
+    build: ./eureka-server
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka/
+    ports:
+      - "8761:8761"
+  gateway-server:
+    image: zuul
+    container_name: zuul
+    build: ./gateway-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+    ports:
+      - "8762:8762"
+  email-server:
+    image: email
+    container_name: email
+    build: ./email-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+      - gateway-server
+    ports:
+      - "9001:9001"
+  sms-server:
+    image: sms
+    container_name: sms
+    build: ./sms-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+      - gateway-server
+    ports:
+      - "9002:9002"
+  push-server:
+    image: push
+    container_name: push
+    build: ./push-service
+    environment:
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://eureka-server:8761/eureka
+    depends_on:
+      - eureka-server
+      - gateway-server
+    ports:
+      - "9003:9003"

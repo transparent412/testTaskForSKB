@@ -1,0 +1,30 @@
+server:
+  port: 8762
+
+spring:
+  application:
+    name: zuul-server
+
+
+eureka:
+  instance:
+    appname: zuul-server
+    metadataMap:
+      instanceId: ${spring.application.name}:${spring.application.instance_id:${server.port}:${random.value}}
+zuul:
+  routes:
+    pushService:
+      path: /pushService/**
+      url: http://localhost:9003/pushService/
+      #serviceId: pushService
+      #stripPrefix: false
+    emailService:
+      path: /emailService/**
+      url: http://localhost:9001/emailService/
+      #serviceId: emailService
+      #stripPrefix: false
+    smsService:
+      path: /smsService/**
+      url: http://localhost:9002/smsService/
+      #serviceId: smsService
+      #stripPrefix: false

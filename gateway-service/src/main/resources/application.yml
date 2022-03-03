@@ -5,26 +5,51 @@ spring:
   application:
     name: zuul-server
 
+#management:
+#  metrics:
+#    export:
+#      prometheus:
+#        enabled: true
+#  endpoint:
+#    health:
+#      show-details: "ALWAYS"
+#    metrics:
+#      enabled: true
+#    prometheus:
+#      enabled: true
+#    pause:
+#      enabled: true
+#    restart:
+#      enabled: true
+#    resume:
+#      enabled: true
+#    shutdown:
+#      enabled: true
+#
+#  endpoints:
+#    web:
+#      exposure:
+#        include: '*'
+#        exclude: env
 
 eureka:
   instance:
     appname: zuul-server
     metadataMap:
       instanceId: ${spring.application.name}:${spring.application.instance_id:${server.port}:${random.value}}
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 zuul:
+  prefix: /api
   routes:
-    pushService:
-      path: /pushService/**
-      url: http://localhost:9003/pushService/
-      #serviceId: pushService
-      #stripPrefix: false
     emailService:
-      path: /emailService/**
-      url: http://localhost:9001/emailService/
-      #serviceId: emailService
-      #stripPrefix: false
+      path: /email/**
+      serviceId: emailService
+    pushService:
+      path: /push/**
+      serviceId: pushService
     smsService:
-      path: /smsService/**
-      url: http://localhost:9002/smsService/
-      #serviceId: smsService
-      #stripPrefix: false
+      path: /sms/**
+      serviceId: smsService
